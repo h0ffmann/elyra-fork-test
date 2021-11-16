@@ -33,7 +33,7 @@ from urllib.parse import urlparse
 from urllib.parse import urlunparse
 
 from packaging import version
-
+import subprocess
 
 # Inputs and Outputs separator character.  If updated,
 # same-named variable in _notebook_op.py must be updated!
@@ -352,10 +352,19 @@ class NotebookFileOp(FileOpBase):
 
             import papermill
             ####
-            myVar = os.getenv('ENV_VAR_TEST', 'anyVal')
-            OpUtil.log_operation_info("############################################")
-            OpUtil.log_operation_info(f"===      {myVar}      ===")
-            OpUtil.log_operation_info("############################################")
+            try:
+               extraRequirements = os.environ["REQUIREMENTS"]
+               result = subprocess.run(['ls', '-l'], stdout=subprocess.PIPE)
+               OpUtil.log_operation_info(f" >>> {result.stdout} <<<")
+               result = subprocess.run(['pwd'], stdout=subprocess.PIPE)
+               OpUtil.log_operation_info(f" >>> {result.stdout} <<<")
+               subprocess.run([sys.executable, "-m", "pip", "install", "-r", extraRequirements], stdout=subprocess.PIPE)
+            except KeyError:
+               OpUtil.log_operation_info("Extra REQUIREMENTS not defined.")
+               pass
+            except Exception as err:
+               OpUtil.log_operation_info("Error while installing REQUIREMENTS dependencies.")
+               raise err
             ####
             papermill.execute_notebook(notebook, notebook_output, kernel_name=kernel_name)
             duration = time.time() - t0
