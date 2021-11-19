@@ -19,7 +19,7 @@ import glob
 import json
 import logging
 import os
-from os.path import exists
+from os.path
 from pathlib import Path
 import subprocess
 import sys
@@ -354,7 +354,7 @@ class NotebookFileOp(FileOpBase):
             import papermill
             ####
             try:
-                if exists('requirements.txt'):
+                if os.path.isfile('requirements.txt'):
                     OpUtil.log_operation_info("Got default notebook dependencies at requirements.txt.")
                     extraRequirements = 'requirements.txt'
                 else:
