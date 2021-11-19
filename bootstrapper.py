@@ -19,6 +19,7 @@ import glob
 import json
 import logging
 import os
+from os.path import exists
 from pathlib import Path
 import subprocess
 import sys
