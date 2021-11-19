@@ -354,7 +354,7 @@ class NotebookFileOp(FileOpBase):
             ####
             try:
                extraRequirements = os.environ["REQUIREMENTS"]
-               result = subprocess.check_output([sys.executable, "-m", "pip", "install", "-r", extraRequirements], check=True, stdout=subprocess.PIPE)
+               result = subprocess.run([sys.executable, "-m", "pip", "install", "-r", extraRequirements], check=True, stdout=subprocess.PIPE)
                OpUtil.log_operation_info(f" >> >> {result.stdout} << <<")
                OpUtil.log_operation_info("Extra REQUIREMENTS installed.")
             except KeyError:
