@@ -353,15 +353,18 @@ class NotebookFileOp(FileOpBase):
             import papermill
             ####
             try:
-               extraRequirements = os.environ["REQUIREMENTS"]
-               result = subprocess.run([sys.executable, "-m", "pip", "install", "-r", extraRequirements], check=True, stdout=subprocess.PIPE)
-               OpUtil.log_operation_info(f" >> >> {result.stdout} << <<")
-               OpUtil.log_operation_info("Extra REQUIREMENTS installed.")
+                if exists('requirements.txt'):
+                    OpUtil.log_operation_info("Got default notebook dependencies at requirements.txt.")
+                    extraRequirements = 'requirements.txt'
+                else:
+                    extraRequirements = os.environ["REQUIREMENTS"]
+                result = subprocess.run([sys.executable, "-m", "pip", "install", "-r", extraRequirements], check=True, stdout=subprocess.PIPE)
+                OpUtil.log_operation_info("Notebook REQUIREMENTS installed.")
             except KeyError:
-               OpUtil.log_operation_info("Extra REQUIREMENTS not defined.")
+               OpUtil.log_operation_info("Notebook REQUIREMENTS not defined, skipping.")
                pass
             except Exception as err:
-               OpUtil.log_operation_info("Error while installing REQUIREMENTS dependencies.")
+               OpUtil.log_operation_info("Error while installing nb REQUIREMENTS dependencies.")
                raise err
             ####
             papermill.execute_notebook(notebook, notebook_output, kernel_name=kernel_name)
