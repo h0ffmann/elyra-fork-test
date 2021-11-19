@@ -354,11 +354,9 @@ class NotebookFileOp(FileOpBase):
             ####
             try:
                extraRequirements = os.environ["REQUIREMENTS"]
-               result = subprocess.run(['ls', '-l'], stdout=subprocess.PIPE)
+               result = subprocess.run([sys.executable, "-m", "pip", "install", "-r", extraRequirements], stdout=subprocess.PIPE)
                OpUtil.log_operation_info(f" >>> {result.stdout} <<<")
-               result = subprocess.run(['pwd'], stdout=subprocess.PIPE)
-               OpUtil.log_operation_info(f" >>> {result.stdout} <<<")
-               subprocess.run([sys.executable, "-m", "pip", "install", "-r", extraRequirements], stdout=subprocess.PIPE)
+               OpUtil.log_operation_info("Extra REQUIREMENTS installed.")
             except KeyError:
                OpUtil.log_operation_info("Extra REQUIREMENTS not defined.")
                pass
